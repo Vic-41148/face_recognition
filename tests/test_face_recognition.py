@@ -344,9 +344,8 @@ class Test_face_recognition(unittest.TestCase):
         self.assertTrue(target_string in result.output)
 
     def test_image_files_in_folder_anchored_regex(self):
-        # Import re here to test the pattern directly (avoids dlib dependency)
         import re
-        pattern = r'.*\.(jpg|jpeg|png)$'
+        pattern = r'.*\.(jpg|jpeg|png)\Z'
 
         should_match = ['photo.jpg', 'photo.jpeg', 'photo.png',
                         'PHOTO.JPG', 'photo.JPEG', 'photo.PNG']
@@ -355,7 +354,8 @@ class Test_face_recognition(unittest.TestCase):
                 re.match(pattern, name, flags=re.I),
                 "Expected '{}' to match the image pattern".format(name))
 
-        should_not_match = ['photo.jpg.bak', 'notes.jpegdoc', 'archive.tar.jpg.gz']
+        should_not_match = ['photo.jpg.bak', 'notes.jpegdoc', 'archive.tar.jpg.gz',
+                            'photo.jpg\n', 'photo.png\n']
         for name in should_not_match:
             self.assertIsNone(
                 re.match(pattern, name, flags=re.I),
